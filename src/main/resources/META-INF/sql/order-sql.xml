@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.practice.springbatch.dao.OrderDao">
+  <!-- Dto mapping -->
+  <resultMap id="order-info" type="com.practice.springbatch.dto.Order">
+    <result property="orderNo"          column="ORDER_NO" />
+    <result property="productName"      column="PRODUCT_NAME" />
+    <result property="userName"         column="USER_NAME" />
+    <result property="price"            column="PRICE" />
+    <result property="createDate"       column="CREATE_DATE" />
+  </resultMap>
+  
+  <select id="findAll" resultMap="order-info">
+   /* OrderDao.findAll */
+    SELECT 
+     ORDER_NO,
+     PRODUCT_NAME,
+     USER_NAME,
+     PRICE,
+     CREATE_DATE
+    FROM ORDER_INFO
+  </select>
+  
+  <select id="findByOrderNo" resultMap="order-info">
+   /* OrderDao.findByOrderNo */
+    SELECT 
+     ORDER_NO,
+     PRODUCT_NAME,
+     USER_NAME,
+     PRICE,
+     CREATE_DATE
+    FROM ORDER_INFO
+    WHERE ORDER_NO = #{orderNo}
+  </select>
+  
+
+  <insert id="createOrder">
+    /* OrderDao.createOrder */
+    INSERT INTO ORDER(
+      ORDER_NO,
+      PRODUCT_NAME,
+      USER_NAME,
+      PRICE,
+      CREATE_DATE
+    ) VALUES (
+      #{orderNo},
+      #{productName},
+      #{userName},
+      #{price},
+      #{createDate}
+    )
+  </insert>
+
+</mapper>
