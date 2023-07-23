@@ -3,7 +3,7 @@ package com.practice.springbatch.dao;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
-import com.practice.springbatch.dto.Order;
+import com.practice.springbatch.entity.Order;
 
 @Repository
 public interface OrderDao {

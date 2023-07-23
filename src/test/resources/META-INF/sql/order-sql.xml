@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.practice.springbatch.dao.OrderDao">
   <!-- Dto mapping -->
-  <resultMap id="order-info" type="com.practice.springbatch.entity.Order">
+  <resultMap id="order-info" type="com.practice.springbatch.dto.Order">
     <result property="orderNo"          column="ORDER_NO" />
     <result property="productName"      column="PRODUCT_NAME" />
     <result property="userName"         column="USER_NAME" />

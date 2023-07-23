@@ -1,10 +1,5 @@
 package com.practice.springbatch.scheduler;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.springframework.batch.core.JobParameter;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersInvalidException;
 import org.springframework.batch.core.launch.JobLauncher;
@@ -15,10 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.practice.springbatch.enums.BatchType;
 import com.practice.springbatch.job.CustomJobConfiguration;
 import com.practice.springbatch.job.SimpleJobConfiguration;
 import com.practice.springbatch.job.StepNextConditionalJobConfiguration;
 import com.practice.springbatch.job.StepNextJobConfiguration;
+import com.practice.springbatch.service.BatchJobService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,11 +38,14 @@ public class Scheduler {
   @Autowired
   private CustomJobConfiguration customJobConfiguration;
   
+  @Autowired
+  private BatchJobService batchJobService;
+  
   
   @Scheduled(cron = "${simpleJob.scheduler}")
   public void runSimpleJob() {
     try {
-      JobParameters jobParameters = customJobConfiguration.getJobParmeters();
+      JobParameters jobParameters = batchJobService.getJobParmeters();
       jobLauncher.run(simpleJobConfiguration.simpleJob(), jobParameters);
       
     } catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException | JobParametersInvalidException e) {
@@ -56,7 +56,7 @@ public class Scheduler {
   @Scheduled(cron = "${stepNextConditional.scheduler}")
   public void runStepNextConditionalJob() {
     try {
-      JobParameters jobParameters = customJobConfiguration.getJobParmeters();
+      JobParameters jobParameters = batchJobService.getJobParmeters();
       jobLauncher.run(stepNextConditionalJobConfiguration.stepNextConditionalJob(), jobParameters);
       
     } catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException | JobParametersInvalidException e) {
@@ -67,7 +67,7 @@ public class Scheduler {
   @Scheduled(cron = "${stepNextJob.scheduler}")
   public void runStepNextJob() {
     try {
-      JobParameters jobParameters = customJobConfiguration.getJobParmeters();
+      JobParameters jobParameters = batchJobService.getJobParmeters();
       jobLauncher.run(stepNextJobConfiguration.stepNextJob(), jobParameters);
       
     } catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException | JobParametersInvalidException e) {
@@ -76,34 +76,19 @@ public class Scheduler {
   }
   
   
-  @Scheduled(cron = "${fileToDBJob.scheduler}")
-  public void runFileToDBScheduler() {
+  @Scheduled(cron = "${scheduler.paymenthistory}")
+  public void runPaymentHistory() {
     try {
-      JobParameters jobParameters = customJobConfiguration.getJobParmeters();
-      jobLauncher.run(customJobConfiguration.fileToDBJob(), jobParameters);
+      
+      JobParameters jobTest001Params = batchJobService.getJobParmeters("jobTest001", BatchType.PAYMENT_HISTORY);
+      jobLauncher.run(customJobConfiguration.jobTest001(), jobTest001Params);
+      
+      JobParameters jobTest002Params = batchJobService.getJobParmeters("jobTest002", BatchType.PAYMENT_HISTORY);
+      jobLauncher.run(customJobConfiguration.jobTest002(), jobTest002Params);
       
     } catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException | JobParametersInvalidException e) {
       e.printStackTrace();
     }
-  }
-  
-
-  @Scheduled(cron = "${DBToFileJob.scheduler}")
-  public void runDBToFileScheduler() {
-    try {
-      
-      JobParameters jobParameters = customJobConfiguration.getJobParmeters();
-      jobLauncher.run(customJobConfiguration.DBToFileJob(), jobParameters);
-      
-    } catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException | JobParametersInvalidException e) {
-      e.printStackTrace();
-    }
-  }
-  
-  @Scheduled(cron = "${delete.file.scheduler")
-  public void runDeleteFiles() throws JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException {
-    JobParameters jobParameters = customJobConfiguration.getJobParmeters();
-    jobLauncher.run(customJobConfiguration.deleteFileJob(), jobParameters);
   }
   
 }

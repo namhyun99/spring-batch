@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.practice.springbatch.dao.OrderDao;
-import com.practice.springbatch.dto.Order;
+import com.practice.springbatch.entity.Order;
 
 import lombok.extern.slf4j.Slf4j;
 

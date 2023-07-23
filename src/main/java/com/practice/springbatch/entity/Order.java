@@ -1,4 +1,4 @@
-package com.practice.springbatch.dto;
+package com.practice.springbatch.entity;
 
 import java.util.Date;
 
