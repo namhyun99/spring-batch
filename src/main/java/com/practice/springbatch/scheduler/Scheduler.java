@@ -7,7 +7,10 @@ import org.springframework.batch.core.repository.JobExecutionAlreadyRunningExcep
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.Trigger;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Component;
 
 import com.practice.springbatch.enums.BatchType;
@@ -21,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
-public class Scheduler {
+public class Scheduler extends DynamicAbstractScheduler {
   
   @Autowired
   private JobLauncher jobLauncher;
@@ -41,6 +44,8 @@ public class Scheduler {
   @Autowired
   private BatchJobService batchJobService;
   
+  @Value("${scheduler.paymenthistory}")
+  private String paymentHistoryCron;
   
   @Scheduled(cron = "${simpleJob.scheduler}")
   public void runSimpleJob() {
@@ -75,20 +80,33 @@ public class Scheduler {
     }
   }
   
-  
+  /*
   @Scheduled(cron = "${scheduler.paymenthistory}")
   public void runPaymentHistory() {
     try {
-      
       JobParameters jobTest001Params = batchJobService.getJobParmeters("jobTest001", BatchType.PAYMENT_HISTORY);
       jobLauncher.run(customJobConfiguration.jobTest001(), jobTest001Params);
-      
-      JobParameters jobTest002Params = batchJobService.getJobParmeters("jobTest002", BatchType.PAYMENT_HISTORY);
-      jobLauncher.run(customJobConfiguration.jobTest002(), jobTest002Params);
       
     } catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException | JobParametersInvalidException e) {
       e.printStackTrace();
     }
   }
+  */
+  @Override
+  public Trigger getTrigger() {
+    return new CronTrigger(paymentHistoryCron);
+  }
+
+  @Override
+  public void runner() {
+    JobParameters jobTest001Params = batchJobService.getJobParmeters("jobTest001", BatchType.PAYMENT_HISTORY);
+    
+    try {
+      jobLauncher.run(customJobConfiguration.jobTest001(), jobTest001Params);
+    } catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException | JobParametersInvalidException e) {
+      e.printStackTrace();
+    }
+  }
+  
   
 }

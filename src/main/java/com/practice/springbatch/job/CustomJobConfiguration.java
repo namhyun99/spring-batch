@@ -25,32 +25,9 @@ public class CustomJobConfiguration extends CommonBatchJobStep {
   @Bean
   public Job jobTest001() {
     return jobBuilderFactory.get("jobTest001")
-        .start(initBatchJobStep(null, null))
-        .next(stepPaymentHistory(null))
-          .on("FAILED")
-          .to(failedBatchJobStep(null))
-          .on("*")
-          .end()
-        .from(stepPaymentHistory(null))
-          .on("*")
-          .to(successfulBatchJobStep(null))
-          .end()
-        .build();
-  }
-  
-  @Bean
-  public Job jobTest002() {
-    return jobBuilderFactory.get("jobTest002")
-        .start(initBatchJobStep(null, null))
-        .next(stepPaymentHistory(null))
-          .on("FAILED")
-          .to(failedBatchJobStep(null))
-          .on("*")
-          .end()
-        .from(stepPaymentHistory(null))
-          .on("*")
-          .to(successfulBatchJobStep(null))
-          .end()
+        .start(initBatchJobStep(null, null)).on("FAILED").to(failedBatchJobStep(null)).on("*").end()
+        .from(initBatchJobStep(null, null)).on("*").to(stepPaymentHistory(null)).on("FAILED").to(failedBatchJobStep(null)).on("*").end()
+        .from(stepPaymentHistory(null)).on("*").to(successfulBatchJobStep(null)).end()
         .build();
   }
 
@@ -62,6 +39,10 @@ public class CustomJobConfiguration extends CommonBatchJobStep {
   public Step stepPaymentHistory(@Value("#{jobParameters[jobId]}") String jobId) {
     return stepBuilderFactory.get("stepPaymentHistory").tasklet((contribution, chunkContext) -> {
       log.info(">>>>>> This is step PaymentHistory");
+      
+      if(jobId == null) {
+        return RepeatStatus.FINISHED;
+      }
         
       try {
           String reqFileName = "TEST_" + jobId + "_001.B";
@@ -73,6 +54,7 @@ public class CustomJobConfiguration extends CommonBatchJobStep {
           batchJobMap.get(jobId).setTotCnt(32);
           batchJobMap.get(jobId).setProcCnt(32);
           batchJobMap.get(jobId).setUnProcCnt(0);
+          contribution.setExitStatus(ExitStatus.COMPLETED);
       } catch (Exception e) {
         e.printStackTrace();
         batchJobMap.get(jobId).setResultMsg(e.getMessage());

@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 
 import org.springframework.batch.core.BatchStatus;
+import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.JobScope;
@@ -33,15 +34,10 @@ public abstract class CommonBatchJobStep {
   protected final StepBuilderFactory stepBuilderFactory; //생성자 DI받음
 
   @Getter
-  protected Map<String, BatchJob> batchJobMap;
+  protected Map<String, BatchJob> batchJobMap = new HashMap<>();
 
   @Autowired
   public BatchJobService batchJobService;
-
-  @PostConstruct
-  public void init() {
-    batchJobMap = new HashMap<>();
-  }
 
   @Bean
   @JobScope
@@ -49,21 +45,30 @@ public abstract class CommonBatchJobStep {
     return stepBuilderFactory.get("initBatchJobStep").tasklet((contribution, chunkContext) -> {
       log.info(">>>>>> This is step init batch job");
       log.info(">>>>>> Received Parameters: jobId: {}, batchType: {}", new Object[] {jobId, batchType});
-      
-      log.info("init batch map size: " + batchJobMap.size());
-      String jobName = contribution.getStepExecution().getJobExecution().getJobInstance().getJobName();
+      if (jobId == null || batchType == null) {
+        return RepeatStatus.FINISHED;
+      }
 
-      BatchJob batchJob = new BatchJob();
-      batchJob.setJobId(jobId);
-      batchJob.setJobName(jobName);
-      batchJob.setBatchType(batchType);
-      batchJob.setStartDate(new Date());
-      batchJob.setEndDate(new Date());
-      batchJob.setStatus(BatchStatus.STARTED);
-      batchJobMap.put(jobId, batchJob);
+      try {
+        log.info("init batch map size: " + batchJobMap.size());
+        String jobName = contribution.getStepExecution().getJobExecution().getJobInstance().getJobName();
 
-      log.info("Init batch map size: " + batchJob);
-      batchJobService.add(batchJobMap.get(jobId));
+        BatchJob batchJob = new BatchJob();
+        batchJob.setJobId(jobId);
+        batchJob.setJobName(jobName);
+        batchJob.setBatchType(batchType);
+        batchJob.setStartDate(new Date());
+        batchJob.setEndDate(new Date());
+        batchJob.setStatus(BatchStatus.STARTED);
+        batchJobMap.put(jobId, batchJob);
+
+        log.info("Init batch map size: " + batchJob);
+        batchJobService.add(batchJobMap.get(jobId));
+      } catch (Exception e) {
+        e.printStackTrace();
+        contribution.setExitStatus(ExitStatus.FAILED);
+        // TODO: handle exception
+      }
       return RepeatStatus.FINISHED;
     }).build();
   }
@@ -73,6 +78,10 @@ public abstract class CommonBatchJobStep {
   public Step successfulBatchJobStep(@Value("#{jobParameters[jobId]}") String jobId) {
     return stepBuilderFactory.get("successfulBatchJobStep").tasklet((contribution, chunkContext) -> {
       log.info(">>>>>> This is step Successful Batch job");
+
+      if (jobId == null) {
+        return RepeatStatus.FINISHED;
+      }
 
       Date endDate = new Date();
       batchJobMap.get(jobId).setEndDate(endDate);
@@ -93,6 +102,11 @@ public abstract class CommonBatchJobStep {
   public Step failedBatchJobStep(@Value("#{jobParameters[jobId]}") String jobId) {
     return stepBuilderFactory.get("failedBatchJobStep").tasklet((contribution, chunkContext) -> {
       log.info(">>>>>> This is step step Failed Batch Job ");
+
+      if (jobId == null) {
+        return RepeatStatus.FINISHED;
+      }
+
       Date endDate = new Date();
       batchJobMap.get(jobId).setEndDate(endDate);
       batchJobMap.get(jobId).setStatus(BatchStatus.FAILED);
