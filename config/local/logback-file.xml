@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<included>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>${LOG_PATTERN}</Pattern>
+        </layout>
+    </appender>
+     
+    <appender name="DAILY_ROLLING_FILE_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOGS_PATH}/server.log</file>
+        <encoder>
+            <Pattern>${LOG_PATTERN}</Pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOGS_PATH}/server.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <!-- or whenever the file size reaches 100MB -->
+                <maxFileSize>1GB</maxFileSize>
+                <!-- kb, mb, gb -->
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>14</maxHistory>
+        </rollingPolicy>
+    </appender>
+    
+    <logger name="com.practice.springbatch" level="DEBUG" additivity="false">
+      <appender-ref ref="CONSOLE" />
+      <appender-ref ref="DAILY_ROLLING_FILE_APPENDER" />
+    </logger>
+    
+    <logger name="org.springframework.security" level="DEBUG" additivity="false">
+      <appender-ref ref="CONSOLE" />
+      <appender-ref ref="DAILY_ROLLING_FILE_APPENDER" />
+    </logger>
+    
+    <logger name="org.hibernate.SQL" level="DEBUG" additivity="false">
+      <appender-ref ref="CONSOLE" />
+      <appender-ref ref="DAILY_ROLLING_FILE_APPENDER" />
+    </logger>
+    
+    <logger name="org.hibernate.type" level="TRACE" additivity="false">
+      <appender-ref ref="CONSOLE" />
+      <appender-ref ref="DAILY_ROLLING_FILE_APPENDER" />
+    </logger>
+    
+    <logger name="org.apache" level="INFO" additivity="false">
+      <appender-ref ref="CONSOLE" />
+      <appender-ref ref="DAILY_ROLLING_FILE_APPENDER" />
+    </logger>
+    
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="DAILY_ROLLING_FILE_APPENDER" />
+    </root>
+    
+</included>
