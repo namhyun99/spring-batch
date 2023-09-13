@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.practice.springbatch.dao.BatchJobDao">
+
+  <!-- mapping -->
+  <resultMap id="batch-job-info" type="com.practice.springbatch.entity.BatchJob">
+    <result property="jobId"            column="JOB_ID" />
+    <result property="jobName"          column="JOB_NAME" />
+    <result property="batchType"        column="BATCH_TYPE" />
+    <result property="startDate"        column="START_DATE" />
+    <result property="endDate"          column="END_DATE" />
+    <result property="reqFileName"      column="REQ_FILE_NAME" />
+    <result property="reqFileSize"      column="REQ_FILE_SIZE" />
+    <result property="resFileName"      column="RES_FILE_NAME" />
+    <result property="resFileSize"      column="RES_FILE_SIZE" />
+    <result property="totCnt"           column="TOT_CNT" />
+    <result property="ProcCnt"          column="PROC_CNT" />
+    <result property="unProcCnt"        column="UNPROC_CNT" />
+    <result property="status"           column="STATUS" />
+    <result property="resultCode"       column="RESULT_CODE" />
+    <result property="resultMsg"        column="RESULT_MSG" />
+  </resultMap>
+
+ <insert id="insert">
+   INSERT INTO BATCH_JOB (
+    JOB_ID,
+    JOB_NAME,
+    BATCH_TYPE,
+    START_DATE,
+    END_DATE,
+    STATUS
+   ) VALUES (
+    #{jobId},
+    #{jobName},
+    #{batchType},
+    #{startDate},
+    #{endDate},
+    #{status}
+   )
+ </insert>
+
+ <update id="update">
+ 
+  UPDATE BATCH_JOB
+  <trim prefix="SET" suffixOverrides=",">
+   <if test="endDate != null">
+    END_DATE = #{endDate},
+   </if>
+   <if test="reqFileName != null">
+    REQ_FILE_NAME = #{reqFileName},
+   </if>
+   <if test="reqFileSize != null">
+    REQ_FILE_Size = #{reqFileSize},
+   </if>
+   <if test="totCnt != null">
+    TOT_CNT = #{totCnt},
+   </if>
+   <if test="procCnt != null">
+    PROC_CNT = #{procCnt},
+   </if>
+   <if test="unProcCnt != null">
+    UNPROC_CNT = #{unProcCnt},
+   </if>
+   <if test="status != null">
+    STATUS = #{status},
+   </if>
+   <if test="resultCode != null">
+    RESULT_CODE = #{resultCode},
+   </if>
+   <if test="resultMsg != null">
+    RESULT_MSG = #{resultMsg},
+   </if>
+  </trim>
+  WHERE JOB_ID = #{jobId}
+ </update>
+
+</mapper>

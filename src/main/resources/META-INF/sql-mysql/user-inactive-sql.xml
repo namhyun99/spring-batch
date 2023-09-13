@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.practice.springbatch.dao.UserInactiveDao">
+  <!-- Dto mapping -->
+  <resultMap id="user-inactive-info" type="com.practice.springbatch.entity.UserInactive">
+    <result property="id"               column="ID" />
+    <result property="name"             column="NAME" />
+  </resultMap>
+  
+  <select id="findOne" resultMap="user-inactive-info">
+    SELECT  
+     ID,
+     NAME
+    FROM USER_INACTIVE
+  </select>
+  
+  <insert id="add">
+    INSERT INTO USER_INACTIVE(
+      ID,
+      NAME
+    ) VALUES (
+      #{id},
+      #{name}
+    )
+  </insert>
+  
+  <delete id="delete">
+    DELETE FROM USER_INACTIVE
+    WHERE ID = #{id}
+  </delete>
+
+</mapper>

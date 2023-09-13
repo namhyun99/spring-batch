@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.practice.springbatch.dao.UserDao">
+  <!-- Dto mapping -->
+  <resultMap id="user-info" type="com.practice.springbatch.entity.User">
+    <result property="id"               column="ID" />
+    <result property="name"             column="NAME" />
+    <result property="state"            column="STATE" />
+    <result property="lastActionDate"   column="LAST_ACTION_DATE" />
+  </resultMap>
+  
+  <select id="findOne" resultMap="user-info">
+    SELECT  
+     ID,
+     NAME,
+     STATE,
+     LAST_ACTION_DATE
+    FROM USER
+  </select>
+  
+  <insert id="add">
+    INSERT INTO USER(
+      ID,
+      NAME,
+      STATE,
+      LAST_ACTION_DATE
+    ) VALUES (
+      #{id},
+      #{name},
+      #{state},
+      #{lastActionDate}
+    )
+  </insert>
+  
+  <update id="updateUserState">
+    UPDATE SET USER (STATE, LAST_ACTION_DATE)
+    VALUE (#{state}, #{lastActionDate})
+    WHERE ID = #{id}
+  </update>
+  
+  <delete id="delete">
+    DELETE FROM USER
+    WHERE ID = #{id}
+  </delete>
+
+</mapper>
