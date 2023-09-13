@@ -18,7 +18,7 @@
     <property name="configLocation" value="classpath:META-INF/mybatis/mybatis-config.xml" />
     <property name="mapperLocations">
       <array>
-        <value>classpath*:META-INF/sql/**/*-sql.xml</value>
+        <value>classpath*:META-INF/sql-mysql/**/*-sql.xml</value>
       </array>
     </property>
   </bean>
