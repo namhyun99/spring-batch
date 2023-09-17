@@ -9,13 +9,35 @@
     <result property="lastActionDate"   column="LAST_ACTION_DATE" />
   </resultMap>
   
+  <select id="findAll" resultMap="user-info">
+    SELECT  
+     ID,
+     NAME,
+     STATE,
+     LAST_ACTION_DATE
+    FROM USER 
+  </select>
+  
+  <select id="findByRestMonthAgo" resultMap="user-info">
+    SELECT  
+     ID,
+     NAME,
+     STATE,
+     LAST_ACTION_DATE
+    FROM USER 
+    WHERE STATE='N'
+    AND LAST_ACTION_DATE <![CDATA[<=]]> DATE_ADD(NOW(), INTERVAL -1 MONTH)
+  </select>
+  
   <select id="findOne" resultMap="user-info">
     SELECT  
      ID,
      NAME,
      STATE,
      LAST_ACTION_DATE
-    FROM USER
+    FROM USER 
+    WHERE USER_ID = #{userId}
+    FOR UPDATE WAIT 5
   </select>
   
   <insert id="add">
@@ -33,8 +55,9 @@
   </insert>
   
   <update id="updateUserState">
-    UPDATE SET USER (STATE, LAST_ACTION_DATE)
-    VALUE (#{state}, #{lastActionDate})
+    UPDATE USER SET
+     STATE = #{state},
+     LAST_ACTION_DATE = #{lastActionDate}
     WHERE ID = #{id}
   </update>
   
