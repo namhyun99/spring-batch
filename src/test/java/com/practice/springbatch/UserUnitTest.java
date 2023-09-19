@@ -1,13 +1,16 @@
 package com.practice.springbatch;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 
+import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
-import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -115,6 +118,33 @@ public class UserUnitTest {
       }
       
       count += limitCount;
+    }
+  }
+  
+  @Test
+  public void 시간_조건_테스트() {
+    TimeZone.setDefault(TimeZone.getTimeZone("Asis/Seoul"));
+    LocalDateTime nowDate = LocalDateTime.now();
+    log.info("nowDate : " + nowDate);
+    
+    LocalDateTime endDate = nowDate.plusSeconds(1);
+//    LocalDateTime endDate = nowDate.plusMinutes(1);
+//    LocalDateTime endDate = nowDate.plusHours(1);
+    log.info("endDate: " + endDate);
+    
+    int max_count = 10000000;
+    int count = 0;
+    LocalDateTime processDate = nowDate;
+    while(count < max_count) {
+      
+      if(processDate.isAfter(endDate)) {
+        log.info("TimeOver. processDate={}, endDate={}", processDate, endDate);
+        break;
+      }
+      
+      log.info(count + "프로세스 처리 및 종료....");
+      count++;
+      processDate = LocalDateTime.now();
     }
   }
   
