@@ -1,14 +1,19 @@
 package com.practice.springbatch;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
-import org.junit.Ignore;
+import org.junit.Before;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +45,8 @@ public class UserUnitTest {
   
   @Test
   @Transactional
-  public void 유저데이터_적재() {
+  @DisplayName("유저데이터_적재")
+  public void insertUser() {
     try {
       int size = 10;
       
@@ -85,7 +91,8 @@ public class UserUnitTest {
   
   @Test
   @Transactional
-  public void 분할_저장_테스트() {
+  @DisplayName("분할_저장_테스트")
+  public void splitSave() {
     
     List<User> userList = userService.findByRestMonthAgo();
     log.info("userListSize: " + userList.size());
@@ -122,7 +129,8 @@ public class UserUnitTest {
   }
   
   @Test
-  public void 시간_조건_테스트() {
+  @DisplayName("시간_조건_테스트")
+  public void timeCondition() {
     TimeZone.setDefault(TimeZone.getTimeZone("Asis/Seoul"));
     LocalDateTime nowDate = LocalDateTime.now();
     log.info("nowDate : " + nowDate);
@@ -146,6 +154,38 @@ public class UserUnitTest {
       count++;
       processDate = LocalDateTime.now();
     }
+  }
+  
+  @Before
+  public void setUp() {
+    User user = new User();
+    user.setId("TEST_ID");
+    user.setName("테스트계쩡");
+    user.setState(UserState.Y);
+    user.setLastActionDate(new Date());
+    userService.add(user);
+  }
+  
+  @Test
+  @DisplayName("유저조회시_락_테스트")
+  public void selectForLock() throws InterruptedException {
+    int numOfThread = 2;
+    ExecutorService executorService = Executors.newFixedThreadPool(10);
+    CountDownLatch countDownLatch = new CountDownLatch(numOfThread);
+    
+    for(int i=0; i<numOfThread; i++) {
+      executorService.execute(() -> {
+        try {
+          User user = userService.findOne("TEST_ID");
+          log.info("user: " + user);
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+        countDownLatch.countDown();
+      });
+    }
+    countDownLatch.await();
+    
   }
   
 }

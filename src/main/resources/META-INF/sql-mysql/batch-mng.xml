@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.practice.springbatch.dao.BatchMngDao">
+
+  <!-- mapping -->
+  <resultMap id="batch_mng-result" type="com.practice.springbatch.entity.BatchMng">
+    <result property="id"                       column="ID" />
+    <result property="interId"                   column="INTF_ID" />
+    <result property="filePath"                 column="FILE_PATH" />
+    <result property="fileName"                 column="FILE_NAME" />
+    <result property="cronTimeSecound"          column="CRON_TIME_SECOUND" />
+    <result property="cronTimeMinute"           column="CRON_TIME_MINUTE" />
+    <result property="cronTimeHour"             column="CRON_TIME_HOUR" />
+    <result property="cronTimeDay"              column="CRON_TIME_DAY" />
+    <result property="cronTimeWeek"             column="CRON_TIME_WEEK" />
+    <result property="cronTimeYear"             column="CRON_TIME_YEAR" />
+  </resultMap>
+
+  <select id="findByInterId" resultMap="batch_mng-result">
+    SELECT * FROM BATCH_MNG WHERE INTF_ID = #{interId}
+  </select>
+
+</mapper>

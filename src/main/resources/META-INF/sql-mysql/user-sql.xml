@@ -2,14 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.practice.springbatch.dao.UserDao">
   <!-- Dto mapping -->
-  <resultMap id="user-info" type="com.practice.springbatch.entity.User">
+  <resultMap id="user-result" type="com.practice.springbatch.entity.User">
     <result property="id"               column="ID" />
     <result property="name"             column="NAME" />
     <result property="state"            column="STATE" />
     <result property="lastActionDate"   column="LAST_ACTION_DATE" />
   </resultMap>
   
-  <select id="findAll" resultMap="user-info">
+  <select id="findAll" resultMap="user-result">
     SELECT  
      ID,
      NAME,
@@ -18,7 +18,7 @@
     FROM USER 
   </select>
   
-  <select id="findByRestMonthAgo" resultMap="user-info">
+  <select id="findByRestMonthAgo" resultMap="user-result">
     SELECT  
      ID,
      NAME,
@@ -29,15 +29,15 @@
     AND LAST_ACTION_DATE <![CDATA[<=]]> DATE_ADD(NOW(), INTERVAL -1 MONTH)
   </select>
   
-  <select id="findOne" resultMap="user-info">
+  <select id="findOne" resultMap="user-result">
     SELECT  
      ID,
      NAME,
      STATE,
      LAST_ACTION_DATE
     FROM USER 
-    WHERE USER_ID = #{userId}
-    FOR UPDATE WAIT 5
+    WHERE ID = #{id}
+    FOR UPDATE
   </select>
   
   <insert id="add">

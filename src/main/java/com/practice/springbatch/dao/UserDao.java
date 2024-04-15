@@ -16,7 +16,7 @@ public interface UserDao {
   
   public List<User> findByRestMonthAgo();
 
-  public User findOne(@Param("userId") String UserId);
+  public User findOne(@Param("id") String UserId);
   
   public void updateUserState(@Param("state") UserState state, @Param("lastActionDate") Date lastActionDate,  @Param("id") String id); 
 

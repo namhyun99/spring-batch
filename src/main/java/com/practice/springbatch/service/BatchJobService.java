@@ -28,6 +28,9 @@ public class BatchJobService {
   
   public void add(BatchJob batchJob) {
     log.info("insert: "+ batchJob);
+    if(batchJob.getJobId() == null) {
+      return;
+    }
     batchJobDao.insert(batchJob);
   }
   

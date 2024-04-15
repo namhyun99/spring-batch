@@ -16,6 +16,5 @@ public interface OrderDao {
   @Cacheable(value="Order", key="#orderNo", cacheManager = "testCacheManager")
   public Order findByOrderNo(Integer orderNo);
   
-  
 
 }
