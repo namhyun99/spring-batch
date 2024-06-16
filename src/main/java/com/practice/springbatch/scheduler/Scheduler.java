@@ -79,7 +79,6 @@ public class Scheduler extends DynamicAbstractScheduler {
     }
   }
   
-  /*
   @Scheduled(cron = "${scheduler.paymenthistory}")
   public void runPaymentHistory() {
     try {
@@ -90,11 +89,11 @@ public class Scheduler extends DynamicAbstractScheduler {
       e.printStackTrace();
     }
   }
-  */
   
   @Override
   public Trigger getTrigger() {
-    BatchMng batchMng = batchMngService.findByInterId("INT-B-0001");
+    //BatchMng batchMng = batchMngService.findByInterId("INT-B-0001");
+    BatchMng batchMng = new BatchMng("0", "30", "18", "*", "*", "*");
     log.info("batchMng: " + batchMng);
     String paymentHistoryCron = 
         batchMng.getCronTimeSecound() + " " 
@@ -106,7 +105,6 @@ public class Scheduler extends DynamicAbstractScheduler {
     log.info("paymentHistoryCron={} ",paymentHistoryCron);
     return new CronTrigger(paymentHistoryCron);
   }
-
   @Override
   public void runner() {
     JobParameters jobTest001Params = batchJobService.getJobParmeters("jobTest001", BatchType.PAYMENT_HISTORY);

@@ -6,9 +6,12 @@ import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.repeat.RepeatStatus;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import com.practice.springbatch.process.TestAspectService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +23,9 @@ public class SimpleJobConfiguration {
   
   private final JobBuilderFactory jobBuilderFactory; //생성자 DI받음
   private final StepBuilderFactory stepBuilderFactory; //생성자 DI받음
+  
+  @Autowired
+  private TestAspectService testAspectService;
   
   @Bean
   public Job simpleJob() {
@@ -35,6 +41,9 @@ public class SimpleJobConfiguration {
     return stepBuilderFactory.get("simpleStep1") //simpleStep이라는 BatchStep을 생성. Builder를 통해 이름을 지정
         .tasklet((contribution, chunkContext) -> { //step안에 수행될 기능을 명시, tasklet은 Step안에서 단일로 수행될 커스텀한 기능을 선언할 때 사용.
           log.info(">>>>>> This is Step1"); //배치가 수행되면 로그 출력
+          
+          testAspectService.testBatchProcessing();
+          
           return RepeatStatus.FINISHED;
         })
         .build();
