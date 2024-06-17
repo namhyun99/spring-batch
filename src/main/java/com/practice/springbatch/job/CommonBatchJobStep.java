@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.practice.springbatch.entity.BatchJob;
+import com.practice.springbatch.entity.type.BatchJobType;
 import com.practice.springbatch.service.BatchJobService;
 
 import lombok.Getter;
@@ -56,7 +57,7 @@ public abstract class CommonBatchJobStep {
         BatchJob batchJob = new BatchJob();
         batchJob.setJobId(jobId);
         batchJob.setJobName(jobName);
-        batchJob.setBatchType(batchType);
+        batchJob.setBatchType(BatchJobType.TEST_BATCH_JOB);
         batchJob.setStartDate(new Date());
         batchJob.setEndDate(new Date());
         batchJob.setStatus(BatchStatus.STARTED);

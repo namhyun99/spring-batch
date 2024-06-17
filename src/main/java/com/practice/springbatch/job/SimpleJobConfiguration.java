@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.practice.springbatch.entity.type.BatchJobType;
 import com.practice.springbatch.process.TestAspectService;
 
 import lombok.RequiredArgsConstructor;
@@ -42,7 +43,9 @@ public class SimpleJobConfiguration {
         .tasklet((contribution, chunkContext) -> { //step안에 수행될 기능을 명시, tasklet은 Step안에서 단일로 수행될 커스텀한 기능을 선언할 때 사용.
           log.info(">>>>>> This is Step1"); //배치가 수행되면 로그 출력
           
-          testAspectService.testBatchProcessing();
+          for(int i=0; i<5; i++) {
+            testAspectService.testBatchProcessing();
+          }
           
           return RepeatStatus.FINISHED;
         })
