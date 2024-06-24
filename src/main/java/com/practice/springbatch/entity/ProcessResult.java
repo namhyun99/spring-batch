@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class BatchProcessResult {
+public class ProcessResult {
   private String      reqFileName;
   private Integer     reqFileSize;
   private String      resFileName;

@@ -9,6 +9,6 @@ import com.practice.springbatch.entity.type.BatchJobType;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface BatchProcessing {
+public @interface CatchException {
   BatchJobType batchJobType();  //default BatchJobType.TEST_BATCH_JOB;
 }
